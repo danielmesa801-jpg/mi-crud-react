@@ -1,5 +1,4 @@
-const BASE_URL = 'http://localhost:8080/api/users';
-
+const BASE_URL = "http://localhost:8080/api/users";
 export async function fetchUsers() {
   const res = await fetch(BASE_URL);
   if (!res.ok) throw new Error('Error al obtener usuarios');
