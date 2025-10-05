@@ -27,7 +27,7 @@ export default function EditUser() {
     loadUser();
   }, [id]);
 
-  async function handleUpdate(data) {
+  const handleUpdate = async (data) => {
     setError(null);
     try {
       await updateUser(id, data);
@@ -36,7 +36,7 @@ export default function EditUser() {
     } catch (e) {
       setError(e.message);
     }
-  }
+  };
 
   if (loading) return <p>Cargando usuario...</p>;
   if (error) return <p>Error: {error}</p>;
