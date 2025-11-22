@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
 
 export default function UserForm({ initialData = {}, onSubmit, isEdit }) {
-  const [form, setForm] = useState({ name: "", email: "" });
+  const [form, setForm] = useState({ 
+    name: "", 
+    email: "", 
+    password: "" 
+  });
+  
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // ✅ Evita reiniciar el formulario cuando initialData es vacío
     if (Object.keys(initialData).length > 0) {
       setForm({
         name: initialData.name ?? "",
         email: initialData.email ?? "",
+        password: "" // la password nunca se muestra
       });
     }
   }, [initialData]);
@@ -21,10 +26,17 @@ export default function UserForm({ initialData = {}, onSubmit, isEdit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!form.name.trim() || !form.email.trim()) {
       setError("Por favor completa todos los campos.");
       return;
     }
+
+    if (!isEdit && form.password.length < 6) {
+      setError("La contraseña debe tener mínimo 6 caracteres.");
+      return;
+    }
+
     setError("");
     onSubmit?.(form);
   };
@@ -36,6 +48,8 @@ export default function UserForm({ initialData = {}, onSubmit, isEdit }) {
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+
+        {/* NAME */}
         <div>
           <label className="block text-gray-700 font-medium mb-1">Nombre</label>
           <input
@@ -44,10 +58,11 @@ export default function UserForm({ initialData = {}, onSubmit, isEdit }) {
             value={form.name}
             onChange={handleChange}
             placeholder="Ingresa el nombre"
-            className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-lg p-2"
           />
         </div>
 
+        {/* EMAIL */}
         <div>
           <label className="block text-gray-700 font-medium mb-1">
             Correo electrónico
@@ -58,9 +73,26 @@ export default function UserForm({ initialData = {}, onSubmit, isEdit }) {
             value={form.email}
             onChange={handleChange}
             placeholder="Ingresa el correo"
-            className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 rounded-lg p-2"
           />
         </div>
+
+        {/* PASSWORD SOLO EN CREAR */}
+        {!isEdit && (
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Contraseña
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="Mínimo 6 caracteres"
+              className="w-full border border-gray-300 rounded-lg p-2"
+            />
+          </div>
+        )}
 
         {error && (
           <p className="text-red-600 text-sm bg-red-50 border border-red-200 p-2 rounded">
